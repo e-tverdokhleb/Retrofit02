@@ -1,5 +1,7 @@
 package com.example.hp.retrofit02;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,20 +20,34 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = "MainActivity";
+
+    private final String clientId = "D9PMov04JuXz7GyhPsoxmS0Bk";
+    private final String clientSecret = "EmUlx2NcXtYowaRmaqz2MreCLOTFa8dOu6sIompvN1e7lcGChz";
+    private final String redirectUri = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button btnOAuth = (Button) findViewById(R.id.btnOAuth);
+        if (btnOAuth != null) {
+            btnOAuth.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(
+                           Intent.ACTION_VIEW,
+                            Uri.parse(ServiceGenerator.API_BASE_URL + "/login" + "?client_id=" + clientId + "&redirect_uri=" + redirectUri));
+                }
+            });
+        }
+
         Button button = (Button) findViewById(R.id.button);
         if (button != null) {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(TAG, "onClick: ");
-
                     HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
                     interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                     OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -43,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                             .build();
 
                     Call<List<Contributor>> call = retrofit.create(TwitterService.class).repoContributors();
-                    new NetworkCall().execute(call);
+                       new NetworkCall().execute(call);
                 }
             });
         }
@@ -53,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(Call... params) {
-            Log.d(TAG, "onClick: ");
+            Log.d(TAG, "onClick: doInBackground ");
             String response = "This is will be response";
             try {
                 response = params[0].execute().body().toString();
@@ -61,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
                 Log.e(TAG, "doInBackground: " + e.getMessage());
             }
-
             return response;
         }
 
@@ -72,4 +87,6 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(result);
         }
     }
+
+
 }
