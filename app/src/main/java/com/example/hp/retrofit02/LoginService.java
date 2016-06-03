@@ -11,4 +11,8 @@ public interface LoginService {
     Call<ServiceGenerator.AccessToken> getAccessToken(
         @Field("code") String code,
         @Field("grant_type") String grantType);
+
+    @FormUrlEncoded
+    @POST("token")
+    Call<Object> getToken(@Field("grant_type") String grantType);
 }

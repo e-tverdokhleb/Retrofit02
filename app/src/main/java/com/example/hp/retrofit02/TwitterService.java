@@ -8,4 +8,5 @@ import retrofit2.http.GET;
 public interface TwitterService {
     @GET("repos/e-tverdokhleb/Retrofit02/contributors")
     Call<List<Contributor>> repoContributors();
+
 }
